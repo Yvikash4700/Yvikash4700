@@ -8,10 +8,10 @@ import datetime
 import os
 
 # insert your Telegram bot token here
-bot = telebot.TeleBot('7442493949:AAGajsSf2qT0vLODuvB1ArindL6uhYU0nHU')
+bot = telebot.TeleBot('7761675538:AAEvCOPGOT6Hdugz-Ym8okixwrzk9RNeqaw')
 
 # Admin user IDs
-admin_id = ["5396195767"]
+admin_id = ["1003209438"]
 
 # File to store allowed user IDs
 USER_FILE = "users.txt"
@@ -208,7 +208,7 @@ def start_attack_reply(message, target, port, time):
     user_info = message.from_user
     username = user_info.username if user_info.username else user_info.first_name
     
-    response = f"{username}, 𝐀𝐓𝐓𝐀𝐂𝐊 𝐒𝐓𝐀𝐑𝐓𝐄𝐃.\n\n𝐓𝐚𝐫𝐠𝐞𝐭: {target}\n𝐏𝐨𝐫𝐭: {port}\n𝐓𝐢𝐦𝐞: {time} 𝐒𝐞𝐜𝐨𝐧𝐝𝐬\n𝐌𝐞𝐭𝐡𝐨𝐝: 🤩BGMI\nBy @Hacking23450"
+    response = f"{username}, 𝐀𝐓𝐓𝐀𝐂𝐊 𝐒𝐓𝐀𝐑𝐓𝐄𝐃.\n\n𝐓𝐚𝐫𝐠𝐞𝐭: {target}\n𝐏𝐨𝐫𝐭: {port}\n𝐓𝐢𝐦𝐞: {time} 𝐒𝐞𝐜𝐨𝐧𝐝𝐬\n𝐌𝐞𝐭𝐡𝐨𝐝: 🤩BGMI\nBy @cocog470"
     bot.reply_to(message, response)
 
 # Dictionary to store the last time each user ran the /bgmi command
@@ -246,9 +246,9 @@ def handle_bgmi(message):
                 subprocess.run(full_command, shell=True)
                 response = f"BGMI Attack Finished. Target: {target} Port: {port} Time: {time}"
         else:
-            response = "Usage :- /bgmi <target> <port> <time>\nBy @Hacking23450"  # Updated command syntax
+            response = "Usage :- /bgmi <target> <port> <time>\nBy @cocog470"  # Updated command syntax
     else:
-        response = "You Are Not Authorized To Use This Command.\nBy @Hacking23450"
+        response = "You Are Not Authorized To Use This Command.\nBy @cocog470"
 
     bot.reply_to(message, response)
 
